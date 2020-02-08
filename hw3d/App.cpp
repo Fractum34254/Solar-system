@@ -37,7 +37,7 @@ void App::DoFrame()
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
 
-
+	earth.Submit(fc);
 	light.Submit( fc );
 	fc.Execute( wnd.Gfx() );
 

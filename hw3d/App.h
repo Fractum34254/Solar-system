@@ -12,6 +12,7 @@
 #include "Stencil.h"
 #include "FrameCommander.h"
 #include "Material.h"
+#include "Planet.h"
 
 class App
 {
@@ -34,4 +35,6 @@ private:
 	Camera cam;
 	FrameCommander fc;
 	PointLight light;
+	//Planets
+	Planet earth{ wnd.Gfx(), "Models\\erde\\sphere.obj", 1.0f/20.0f};
 };
