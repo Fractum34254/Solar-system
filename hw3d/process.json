@@ -4,7 +4,7 @@
     {
       "command": "flip-y",
       "params": {
-        "source": "Models\\brick_wall\\brick_wall_normal.jpg"
+        "source": "Models\\sphere\\textures\\03-_Default_normal.png"
       }
     }
 	]
