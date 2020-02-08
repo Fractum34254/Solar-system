@@ -47,9 +47,9 @@ void Camera::SpawnControlWindow() noexcept
 
 void Camera::Reset() noexcept
 {
-	pos = { -13.5f,6.0f,3.5f };
+	pos = { -13.5f,0.0f,0.0f };
 	pitch = 0.0f;
-	yaw = PI / 2.0f;
+	yaw = PI / 2.0f; //looking to positive x-Direction
 }
 
 void Camera::Rotate( float dx,float dy ) noexcept
@@ -65,6 +65,20 @@ void Camera::Translate( DirectX::XMFLOAT3 translation ) noexcept
 		dx::XMMatrixRotationRollPitchYaw( pitch,yaw,0.0f ) *
 		dx::XMMatrixScaling( travelSpeed,travelSpeed,travelSpeed )
 	) );
+	pos = {
+		pos.x + translation.x,
+		pos.y + translation.y,
+		pos.z + translation.z
+	};
+}
+
+void Camera::TranslateWithoutPitch(DirectX::XMFLOAT3 translation) noexcept
+{
+	dx::XMStoreFloat3(&translation, dx::XMVector3Transform(
+		dx::XMLoadFloat3(&translation),
+		dx::XMMatrixRotationRollPitchYaw(0.0f, yaw, 0.0f) *
+		dx::XMMatrixScaling(travelSpeed, travelSpeed, travelSpeed)
+	));
 	pos = {
 		pos.x + translation.x,
 		pos.y + translation.y,
