@@ -36,5 +36,12 @@ private:
 	FrameCommander fc;
 	PointLight light;
 	//Planets
+	Planet mercury{ wnd.Gfx(), "Models\\merkur\\sphere.obj", 1.0f / 20.0f };
+	Planet venus{ wnd.Gfx(), "Models\\venus\\sphere.obj", 1.0f / 20.0f };
 	Planet earth{ wnd.Gfx(), "Models\\erde\\sphere.obj", 1.0f/20.0f};
+	Planet mars{ wnd.Gfx(), "Models\\mars\\sphere.obj", 1.0f / 20.0f };
+	Planet jupiter{ wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 20.0f };
+	Planet saturn{ wnd.Gfx(), "Models\\saturn\\sphere.obj", 1.0f / 20.0f };
+	Planet uranus{ wnd.Gfx(), "Models\\uranus\\sphere.obj", 1.0f / 20.0f };
+	Planet neptune{ wnd.Gfx(), "Models\\neptun\\sphere.obj", 1.0f / 20.0f };
 };

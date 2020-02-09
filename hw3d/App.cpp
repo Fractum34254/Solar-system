@@ -28,6 +28,15 @@ App::App( const std::string& commandLine )
 	light( wnd.Gfx() )
 {
 	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,400.0f ) );
+
+	mercury.SetPos({ 10.0f, 0.0f, 0.0f });
+	venus.SetPos({ 10.0f, 0.0f, 10.0f });
+	earth.SetPos({ 0.0f, 0.0f, 10.0f });
+	mars.SetPos({ -10.0f, 0.0f, 10.0f });
+	jupiter.SetPos({ -10.0f, 0.0f, 0.0f });
+	saturn.SetPos({ -10.0f, 0.0f, -10.0f });
+	uranus.SetPos({ 0.0f, 0.0f, -10.0f });
+	neptune.SetPos({ 10.0f, 0.0f, -10.0f });
 }
 
 void App::DoFrame()
@@ -37,7 +46,14 @@ void App::DoFrame()
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
 
+	mercury.Submit(fc);
+	venus.Submit(fc);
 	earth.Submit(fc);
+	mars.Submit(fc);
+	jupiter.Submit(fc);
+	saturn.Submit(fc);
+	uranus.Submit(fc);
+	neptune.Submit(fc);
 	light.Submit( fc );
 	fc.Execute( wnd.Gfx() );
 
