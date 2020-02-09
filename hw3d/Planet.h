@@ -13,6 +13,10 @@ public:
 	{
 		sphere.Submit(fc);
 	}
+	void SetPos(const DirectX::XMFLOAT3& pos)
+	{
+		sphere.SetRootTransform(DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&pos)));
+	}
 private:
 	Model sphere;
 };
