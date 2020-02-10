@@ -52,9 +52,9 @@ public:
 
 		SetPos({ (float)x,(float)z,(float)y });
 	}
-	void SetRadiusScale(float newScale)
+	float* GetRadiusScale()
 	{
-		radiusScale = newScale;
+		return &radiusScale;
 	}
 	void Highlight();
 	void DeHighlight();
@@ -77,6 +77,10 @@ public:
 			ImGui::Text(s.c_str());
 		}
 		ImGui::End();
+	}
+	std::string GetName() const
+	{
+		return name;
 	}
 private:
 	static double SolveKepler(double M, double e)
@@ -101,7 +105,7 @@ private:
 	double omega; ///Winkel des aufsteigenden Knotens
 	double w; ///Periapsis
 	double T; ///Umlaufzeit
-	float radiusScale = 1.0f;
+	float radiusScale = 2.0f;
 	//calculated values
 	const double sini = sin(i);
 	const double cosi = cos(i);

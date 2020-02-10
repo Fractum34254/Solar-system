@@ -28,10 +28,16 @@ App::App( const std::string& commandLine )
 	light( wnd.Gfx() )
 {
 	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,400.0f ) );
-	for (int i = 0; i < 8; i++)
-	{
-		radia.push_back(2.0f);
-	}
+
+	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132 )));
+
 }
 
 void App::DoFrame()
@@ -49,33 +55,25 @@ void App::DoFrame()
 	{
 		if (ImGui::TreeNodeEx((void*)(intptr_t)0, 0, "Bahnradien"))
 		{
-			ImGui::SliderFloat("Merkur", &(radia.at(0)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Venus", &(radia.at(1)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Erde", &(radia.at(2)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Mars", &(radia.at(3)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Jupiter", &(radia.at(4)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Saturn", &(radia.at(5)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Uranus", &(radia.at(6)), 0.1f, 10.0f, "%.1f");
-			ImGui::SliderFloat("Neptun", &(radia.at(7)), 0.1f, 10.0f, "%.1f");
+			for (size_t i = 0; i < planets.size(); i++)
+			{
+				ImGui::SliderFloat(planets.at(i)->GetName().c_str(), planets.at(i)->GetRadiusScale(), 0.1f, 10.0f, "%.1f");
+			}
 			if (ImGui::Checkbox("Reale Radien?", &real))
 			{
 				if (real)
 				{
-					for (int i = 0; i < 8; i++)
+					for (size_t i = 0; i < planets.size(); i++)
 					{
-						radia.at(i) = 2.0f;
+						*planets.at(i)->GetRadiusScale() = 2.0f;
 					}
 				}
 				else
 				{
-					radia.at(0) = 1.0f / ((float)mercury.GetA());
-					radia.at(1) = 2.0f / ((float)venus.GetA());
-					radia.at(2) = 3.0f / ((float)earth.GetA());
-					radia.at(3) = 4.0f / ((float)mars.GetA());
-					radia.at(4) = 5.0f / ((float)jupiter.GetA());
-					radia.at(5) = 6.0f / ((float)saturn.GetA());
-					radia.at(6) = 7.0f / ((float)uranus.GetA());
-					radia.at(7) = 8.0f / ((float)neptune.GetA());
+					for (size_t i = 0; i < planets.size(); i++)
+					{
+						*planets.at(i)->GetRadiusScale() = (float)(i + 1) / (float)planets.at(i)->GetA();
+					}
 				}
 			}
 			ImGui::TreePop();
@@ -94,54 +92,22 @@ void App::DoFrame()
 			}
 			ImGui::TreePop();
 		}
-		if (ImGui::TreeNodeEx((void*)(intptr_t)2, 0, "Informationen"))
-		{
-			ImGui::Checkbox("Erde - ja", &blah);
-			if (blah)
-			{
-				earth.SpawnInfoWindow();
-				earth.Highlight();
-			}
-			else
-			{
-				earth.DeHighlight();
-			}
-			ImGui::TreePop();
-		}
 	}
 	ImGui::End();
-
-	//Radia update
-	mercury.SetRadiusScale(radia.at(0));
-	venus.SetRadiusScale(radia.at(1));
-	earth.SetRadiusScale(radia.at(2));
-	mars.SetRadiusScale(radia.at(3));
-	jupiter.SetRadiusScale(radia.at(4));
-	saturn.SetRadiusScale(radia.at(5));
-	uranus.SetRadiusScale(radia.at(6));
-	neptune.SetRadiusScale(radia.at(7));
-
+	
 
 	//Calculate positions
-	mercury.CalculatePosition(time);
-	venus.CalculatePosition(time);
-	earth.CalculatePosition(time);
-	mars.CalculatePosition(time);
-	jupiter.CalculatePosition(time);
-	saturn.CalculatePosition(time);
-	uranus.CalculatePosition(time);
-	neptune.CalculatePosition(time);
+	for (size_t i = 0; i < planets.size(); i++)
+	{
+		planets.at(i)->CalculatePosition(time);
+	}
 
 
 	//Submit draws
-	mercury.Submit(fc);
-	venus.Submit(fc);
-	earth.Submit(fc);
-	mars.Submit(fc);
-	jupiter.Submit(fc);
-	saturn.Submit(fc);
-	uranus.Submit(fc);
-	neptune.Submit(fc);
+	for (size_t i = 0; i < planets.size(); i++)
+	{
+		planets.at(i)->Submit(fc);
+	}
 	light.Submit( fc );
 	fc.Execute( wnd.Gfx() );
 
