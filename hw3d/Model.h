@@ -19,6 +19,7 @@ public:
 	void Submit( FrameCommander& frame ) const noxnd;
 	void SetRootTransform( DirectX::FXMMATRIX tf ) noexcept;
 	void Accept( class ModelProbe& probe );
+	void Accept( class TechniqueProbe& probe);
 	~Model() noexcept;
 private:
 	static std::unique_ptr<Mesh> ParseMesh( Graphics& gfx,const aiMesh& mesh,const aiMaterial* const* pMaterials,const std::filesystem::path& path,float scale );

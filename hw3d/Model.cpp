@@ -70,6 +70,14 @@ void Model::Accept( ModelProbe & probe )
 	pRoot->Accept( probe );
 }
 
+void Model::Accept(TechniqueProbe & probe)
+{
+	for (auto& mesh : meshPtrs)
+	{
+		mesh->Accept(probe);
+	}
+}
+
 Model::~Model() noexcept
 {}
 
