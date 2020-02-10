@@ -165,7 +165,7 @@ Material::Material( Graphics& gfx,const aiMaterial& material,const std::filesyst
 				Dcb::RawLayout lay;
 				lay.Add<Dcb::Float>( "offset" );
 				auto buf = Dcb::Buffer( std::move( lay ) );
-				buf["offset"] = 0.1f;                  
+				buf["offset"] = 0.03f;                  
 				draw.AddBindable( std::make_shared<Bind::CachingVertexConstantBufferEx>( gfx,buf,1u ) );
 			}
 
