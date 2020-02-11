@@ -22,9 +22,9 @@ public:
 	{
 		sphere.Submit(fc);
 	}
-	void SetPos(const DirectX::XMFLOAT3& pos)
+	void SetPos(const DirectX::XMFLOAT3& position)
 	{
-		sphere.SetRootTransform(DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&pos)));
+		sphere.SetRootTransform(DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&position)));
 	}
 	double GetA() const
 	{
@@ -50,7 +50,8 @@ public:
 		const double y = radiusScale * a * (cosv * (double)P.y + sinv * (double)Q.y);
 		const double z = radiusScale * a * (cosv * (double)P.z + sinv * (double)Q.z);
 
-		SetPos({ (float)x,(float)z,(float)y });
+		pos = { (float)x,(float)z,(float)y };
+		SetPos(pos);
 	}
 	float* GetRadiusScale()
 	{
@@ -81,6 +82,10 @@ public:
 	std::string GetName() const
 	{
 		return name;
+	}
+	DirectX::XMFLOAT3 GetPosition() const
+	{
+		return pos;
 	}
 private:
 	static double SolveKepler(double M, double e)
@@ -113,4 +118,5 @@ private:
 	const double cosomega = cos(omega);
 	const double sinw = sin(w);
 	const double cosw = cos(w);
+	DirectX::XMFLOAT3 pos;
 };
