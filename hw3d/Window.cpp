@@ -181,6 +181,25 @@ Graphics& Window::Gfx()
 	return *pGfx;
 }
 
+Graphics & Window::Gfx() const
+{
+	if (!pGfx)
+	{
+		throw CHWND_NOGFX_EXCEPT();
+	}
+	return *pGfx;
+}
+
+int Window::GetHeight() const
+{
+	return height;
+}
+
+int Window::GetWidth() const
+{
+	return width;
+}
+
 void Window::ConfineCursor() noexcept
 {
 	RECT rect; 
