@@ -25,6 +25,8 @@ public:
 private:
 	void DoFrame();
 	void ShowImguiDemoWindow();
+	void SpawnControlWindow();
+	DirectX::XMVECTOR GetClickVector(DirectX::XMFLOAT3 pixel) const;
 private:
 	std::string commandLine;
 	bool showDemoWindow = false;
@@ -37,6 +39,8 @@ private:
 	Camera cam;
 	FrameCommander fc;
 	PointLight light;
+	int selected = -1;
+	bool clicked = false;
 	double time = 0.0;
 	//Controls
 	bool accurate = true;

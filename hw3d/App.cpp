@@ -50,6 +50,103 @@ void App::DoFrame()
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
 
+	//Calculate positions
+	for (size_t i = 0; i < planets.size(); i++)
+	{
+		planets.at(i)->CalculatePosition(time);
+	}
+
+	//Test for clicking
+	if (wnd.mouse.LeftIsPressed() && wnd.CursorEnabled())
+	{
+		DirectX::XMFLOAT3 dir;
+		DirectX::XMStoreFloat3(&dir, GetClickVector({ (float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY(), 0.0f }));
+		const DirectX::XMFLOAT3 camPos = cam.GetPos();
+		const float adbecf = camPos.x * dir.x + camPos.y * dir.y + camPos.z * dir.z;
+		const float def = dir.x * dir.x + dir.y * dir.y + dir.z * dir.z;
+
+		std::vector<std::pair<float, float>> diff;
+		std::vector<bool> focused;
+
+		for (size_t i = 0; i < planets.size(); i++)
+		{
+			const DirectX::XMFLOAT3 pos = planets.at(i)->GetPosition();
+			const float r = (pos.x * dir.x + pos.y * dir.y + pos.z * dir.z - adbecf ) / (def);
+			const DirectX::XMVECTOR point = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&camPos), DirectX::XMVectorScale(DirectX::XMLoadFloat3(&dir), r));
+			DirectX::XMFLOAT3 length;
+			DirectX::XMStoreFloat3(&length, DirectX::XMVector3Length(DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&pos), point)));
+			diff.emplace_back( length.x, r );
+		}
+
+		std::for_each(diff.begin(), diff.end(), [&focused](std::pair<float, float> p) {focused.emplace_back(p.first < 0.25f); });
+
+		selected = -1;
+		for (size_t i = 0; i < planets.size(); i++)
+		{
+			if (focused.at(i))
+			{
+				if ((selected == -1) || (std::max(diff.at(i).second, 0.0f) < diff.at(selected).second))
+				{
+					selected = static_cast<int>(i);
+				}
+			}
+		}
+		clicked = true;
+	}
+
+	//Highlight the clicked planet
+	if (clicked)
+	{
+		for (size_t i = 0; i < planets.size(); i++)
+		{
+			planets.at(i)->DeHighlight();
+		}
+		if(selected != -1)
+		{
+			planets.at(selected)->Highlight();
+		}
+		clicked = false;
+	}
+
+	//Show Info Window of Highlighted planet
+	if (selected != -1)
+	{
+		planets.at(selected)->SpawnInfoWindow();
+	}
+
+
+	//Submit draws
+	for (size_t i = 0; i < planets.size(); i++)
+	{
+		planets.at(i)->Submit(fc);
+	}
+	light.Submit( fc );
+	fc.Execute( wnd.Gfx() );
+
+	Controller::ResolveKeyboard(wnd, cam, cam_dt / 2.0f);
+	Controller::ResolveMouse(wnd, cam);
+	
+
+	// imgui windows
+	cam.SpawnControlWindow();
+	light.SpawnControlWindow();
+	SpawnControlWindow();
+
+	// present
+	wnd.Gfx().EndFrame();
+	fc.Reset();
+}
+
+void App::ShowImguiDemoWindow()
+{
+	if( showDemoWindow )
+	{
+		ImGui::ShowDemoWindow( &showDemoWindow );
+	}
+}
+
+void App::SpawnControlWindow()
+{
 	//Imgui control window
 	if (ImGui::Begin("Steuerung"))
 	{
@@ -83,7 +180,7 @@ void App::DoFrame()
 			ImGui::Checkbox("Exakt?", &accurate);
 			if (accurate)
 			{
-				ImGui::SliderFloat("Faktor", &speed_factor, speed_factor_point-3.0f, speed_factor_point+3.0f, "%.1f");
+				ImGui::SliderFloat("Faktor", &speed_factor, speed_factor_point - 3.0f, speed_factor_point + 3.0f, "%.1f");
 			}
 			else
 			{
@@ -94,42 +191,12 @@ void App::DoFrame()
 		}
 	}
 	ImGui::End();
-	
-
-	//Calculate positions
-	for (size_t i = 0; i < planets.size(); i++)
-	{
-		planets.at(i)->CalculatePosition(time);
-	}
-
-
-	//Submit draws
-	for (size_t i = 0; i < planets.size(); i++)
-	{
-		planets.at(i)->Submit(fc);
-	}
-	light.Submit( fc );
-	fc.Execute( wnd.Gfx() );
-
-	Controller::ResolveKeyboard(wnd, cam, cam_dt / 2.0f);
-	Controller::ResolveMouse(wnd, cam);
-	
-
-	// imgui windows
-	cam.SpawnControlWindow();
-	light.SpawnControlWindow();
-
-	// present
-	wnd.Gfx().EndFrame();
-	fc.Reset();
 }
 
-void App::ShowImguiDemoWindow()
+DirectX::XMVECTOR App::GetClickVector(DirectX::XMFLOAT3 pixel) const
 {
-	if( showDemoWindow )
-	{
-		ImGui::ShowDemoWindow( &showDemoWindow );
-	}
+	const DirectX::XMVECTOR worldSpace = DirectX::XMVector3Unproject(DirectX::XMLoadFloat3(&pixel), 0.0f, 0.0f, (float)wnd.GetWidth(), (float)wnd.GetHeight(), 0.0f, 1.0f, wnd.Gfx().GetProjection(), wnd.Gfx().GetCamera(), DirectX::XMMatrixIdentity());
+	return DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(worldSpace, DirectX::XMLoadFloat3(&cam.GetPos())));
 }
 
 App::~App()
