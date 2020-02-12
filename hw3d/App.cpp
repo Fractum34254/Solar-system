@@ -16,7 +16,6 @@
 #include "ModelProbe.h"
 #include "Node.h"
 #include "ChiliXM.h"
-#include "Controller.h"
 
 namespace dx = DirectX;
 
@@ -29,14 +28,17 @@ App::App( const std::string& commandLine )
 {
 	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,400.0f ) );
 
-	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846 )));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132 )));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467, 58.646225, 0.0)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726, -243.0187, 3.09446876)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0, 1.0, 0.40927971)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476, 1.02595675, 0.439648439)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615, 0.41354, 0.054454273)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498, 0.44401, 0.466526509)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393)));
+
+	planets.at(2)->SetInfo("Unser Heimatplanet.\nEinzigartig im Universum.");
+	planets.at(3)->SetInfo("Wann Elon Musk wohl dort sein wird?");
 
 }
 
@@ -44,16 +46,22 @@ void App::DoFrame()
 {
 	//Frame setup
 	const auto cam_dt = timer.Mark();
-	const auto dt = cam_dt * speed_factor;
+	const auto dt = cam_dt * speed_factor * constant_speed_factor;
 	time += (double)dt;
 	wnd.Gfx().BeginFrame( 0.07f,0.0f,0.12f );
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
 
-	//Calculate positions
+	//Calculate positions & rotations
 	for (size_t i = 0; i < planets.size(); i++)
 	{
-		planets.at(i)->CalculatePosition(time);
+		//1s * constant_speed_factor = 1a
+		planets.at(i)->CalculatePosition(time * 2 * PI);
+		if (rotation)
+		{
+			//input in siderischen Tagen
+			planets.at(i)->CalculateRotation(time * 366.25);
+		}
 	}
 
 	//Test for clicking
@@ -78,14 +86,14 @@ void App::DoFrame()
 			diff.emplace_back( length.x, r );
 		}
 
-		std::for_each(diff.begin(), diff.end(), [&focused](std::pair<float, float> p) {focused.emplace_back(p.first < 0.25f); });
+		std::for_each(diff.begin(), diff.end(), [&focused](std::pair<float, float> p) {focused.emplace_back((p.first < 0.25f) && (p.second >= 0.0f)); });
 
 		selected = -1;
 		for (size_t i = 0; i < planets.size(); i++)
 		{
 			if (focused.at(i))
 			{
-				if ((selected == -1) || (std::max(diff.at(i).second, 0.0f) < diff.at(selected).second))
+				if ((selected == -1) || (diff.at(i).second < diff.at(selected).second))
 				{
 					selected = static_cast<int>(i);
 				}
@@ -114,6 +122,11 @@ void App::DoFrame()
 		planets.at(selected)->SpawnInfoWindow();
 	}
 
+	//Apply transforms
+	for (size_t i = 0; i < planets.size(); i++)
+	{
+		planets.at(i)->ApplyTransforms();
+	}
 
 	//Submit draws
 	for (size_t i = 0; i < planets.size(); i++)
@@ -123,12 +136,15 @@ void App::DoFrame()
 	light.Submit( fc );
 	fc.Execute( wnd.Gfx() );
 
-	Controller::ResolveKeyboard(wnd, cam, cam_dt / 2.0f);
-	Controller::ResolveMouse(wnd, cam);
+	if (speed_factor != 0.0f && former_speed_factor != 0.0f)
+	{
+		former_speed_factor = 0.0f;
+	}
+	ResolveKeyboard(cam_dt);
+	ResolveMouse();
 	
 
 	// imgui windows
-	cam.SpawnControlWindow();
 	light.SpawnControlWindow();
 	SpawnControlWindow();
 
@@ -150,6 +166,58 @@ void App::SpawnControlWindow()
 	//Imgui control window
 	if (ImGui::Begin("Steuerung"))
 	{
+		int days = (int)(time * 365.25) - 37;
+		int years = 2000;
+		while (days <= 0)
+		{
+			years--;
+			if (years % 4 == 0)
+			{
+				days += 366;
+			}
+			else
+			{
+				days += 365;
+			}
+		}
+		while (days > 366)
+		{
+			if (years % 4 == 0)
+			{
+				if (days > 366)
+				{
+					days -= 366;
+				}
+				else
+				{
+					years--;
+				}
+			}
+			else
+			{
+				days -= 365;
+			}
+			years++;
+		}
+		if (days == 366)
+		{
+			if (years % 4 != 0)
+			{
+				days -= 365;
+				years++;
+			}
+		}
+		int months = 1;
+		int monthDays = 31; ///January
+		for (; days > monthDays; months++)
+		{
+			days -= monthDays;
+			monthDays = (monthsCount[months] + ((((years % 4) == 0) && (months == 1)) ? 1 : 0));
+		}
+
+		std::string t = "Datum:";
+		t += std::to_string(days) + "." + std::to_string(months) + "." + std::to_string(years);
+		ImGui::Text(t.c_str());
 		if (ImGui::TreeNodeEx((void*)(intptr_t)0, 0, "Bahnradien"))
 		{
 			for (size_t i = 0; i < planets.size(); i++)
@@ -184,11 +252,12 @@ void App::SpawnControlWindow()
 			}
 			else
 			{
-				ImGui::SliderFloat("Faktor", &speed_factor, -50.0f, 50.0f, "%1.0f");
+				ImGui::SliderFloat("Faktor", &speed_factor, -5.0f / constant_speed_factor, 5.0f / constant_speed_factor, "%1.0f");
 				speed_factor_point = speed_factor;
 			}
 			ImGui::TreePop();
 		}
+		ImGui::Checkbox("Rotation?", &rotation);
 	}
 	ImGui::End();
 }
@@ -197,6 +266,85 @@ DirectX::XMVECTOR App::GetClickVector(DirectX::XMFLOAT3 pixel) const
 {
 	const DirectX::XMVECTOR worldSpace = DirectX::XMVector3Unproject(DirectX::XMLoadFloat3(&pixel), 0.0f, 0.0f, (float)wnd.GetWidth(), (float)wnd.GetHeight(), 0.0f, 1.0f, wnd.Gfx().GetProjection(), wnd.Gfx().GetCamera(), DirectX::XMMatrixIdentity());
 	return DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(worldSpace, DirectX::XMLoadFloat3(&cam.GetPos())));
+}
+
+void App::ResolveKeyboard(float dt)
+{
+	while (const auto e = wnd.kbd.ReadKey())
+	{
+		if (!e->IsPress())
+		{
+			continue;
+		}
+
+		switch (e->GetCode())
+		{
+		case VK_ESCAPE:
+			if (wnd.CursorEnabled())
+			{
+				wnd.DisableCursor();
+				wnd.mouse.EnableRaw();
+			}
+			else
+			{
+				wnd.EnableCursor();
+				wnd.mouse.DisableRaw();
+			}
+			break;
+		case VK_SPACE:
+			if (wnd.CursorEnabled())
+			{
+				std::swap(speed_factor, former_speed_factor);
+				speed_factor_point = speed_factor;
+			}
+			break;
+		case VK_LEFT:
+			time -= 1.0f / 365.25f;
+			break;
+		case VK_RIGHT:
+			time += 1.0f / 365.25f;
+			break;
+		}
+	}
+
+	if (!wnd.CursorEnabled())
+	{
+		if (wnd.kbd.KeyIsPressed('W'))
+		{
+			cam.TranslateWithoutPitch({ 0.0f,0.0f,dt });
+		}
+		if (wnd.kbd.KeyIsPressed('A'))
+		{
+			cam.Translate({ -dt,0.0f,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed('S'))
+		{
+			cam.TranslateWithoutPitch({ 0.0f,0.0f,-dt });
+		}
+		if (wnd.kbd.KeyIsPressed('D'))
+		{
+			cam.Translate({ dt,0.0f,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed(VK_SPACE))
+		{
+			cam.TranslateWithoutPitch({ 0.0f,dt,0.0f });
+		}
+		if (wnd.kbd.KeyIsPressed(VK_CONTROL))
+		{
+			cam.TranslateWithoutPitch({ 0.0f,-dt,0.0f });
+		}
+	}
+}
+
+void App::ResolveMouse()
+{
+	while (const auto delta = wnd.mouse.ReadRawDelta())
+	{
+		if (!wnd.CursorEnabled())
+		{
+			cam.Rotate((float)delta->x, (float)delta->y);
+		}
+	}
 }
 
 App::~App()

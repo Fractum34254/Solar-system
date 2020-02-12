@@ -467,9 +467,6 @@
     <ClInclude Include="ModelProbe.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>

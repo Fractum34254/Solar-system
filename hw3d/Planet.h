@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "ChiliMath.h"
 #include "Model.h"
 #include "FrameCommander.h"
 #include "imgui/imgui.h"
@@ -7,7 +8,7 @@
 class Planet
 {
 public:
-	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T)
+	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b)
 		:
 		name(name),
 		sphere(gfx, pathString, sphereScale),
@@ -16,19 +17,38 @@ public:
 		i(i),
 		omega(omega),
 		w(w),
-		T(T)
-	{}
+		T(T),
+		t(t),
+		b(b)
+	{
+		text = "---";
+		//calculating tilt
+		///angle to earth-orbit
+		const double tiltAngle = b + i;
+		///rotational axis
+		const DirectX::XMFLOAT3 xAxis = { 1.0f, 0.0f, 0.0f };
+		const DirectX::XMVECTOR axis = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&xAxis), DirectX::XMMatrixRotationRollPitchYaw(0.0f, -(float)omega - 2.0f * PI * 37.0f / 366.25f, 0.0f));
+		tilt = DirectX::XMMatrixRotationAxis(axis, (float)tiltAngle);
+	}
 	void Submit(FrameCommander& fc) const
 	{
 		sphere.Submit(fc);
 	}
 	void SetPos(const DirectX::XMFLOAT3& position)
 	{
-		sphere.SetRootTransform(DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&position)));
+		pos = position;
+	}
+	void SetRotation(const DirectX::XMMATRIX& rot)
+	{
+		rotation = rot;
 	}
 	double GetA() const
 	{
 		return a;
+	}
+	void ApplyTransforms()
+	{
+		sphere.SetRootTransform(rotation * tilt * DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&pos)));
 	}
 	void CalculatePosition(double M)
 	{
@@ -50,8 +70,12 @@ public:
 		const double y = radiusScale * a * (cosv * (double)P.y + sinv * (double)Q.y);
 		const double z = radiusScale * a * (cosv * (double)P.z + sinv * (double)Q.z);
 
-		pos = { (float)x,(float)z,(float)y };
-		SetPos(pos);
+		SetPos({ (float)x,(float)z,(float)y });
+	}
+	void CalculateRotation(double dt) //dt in siderischen Tagen
+	{
+		const DirectX::XMFLOAT3 axis = { 0.0f, 1.0f, 0.0f };
+		SetRotation(DirectX::XMMatrixRotationAxis(DirectX::XMLoadFloat3(&axis), -(float)dt * 2.0f * PI / ((float)t)));
 	}
 	float* GetRadiusScale()
 	{
@@ -64,18 +88,25 @@ public:
 		if (ImGui::Begin(name.c_str()))
 		{
 			std::string s;
+			ImGui::TextColored({ 0, 255, 255, 255 }, "Datensatz:");
 			s = "e: " + std::to_string(e);
 			ImGui::Text(s.c_str());
 			s = "a: " + std::to_string(a);
 			ImGui::Text(s.c_str());
 			s = "Umlaufzeit: " + std::to_string(T);
 			ImGui::Text(s.c_str());
-			s = "Inklination: " + std::to_string(i);
+			s = "Rotationsperiode: " + std::to_string(t);
 			ImGui::Text(s.c_str());
-			s = "Periapsis: " + std::to_string(w);
+			s = "Neigung zur Bahnebene: " + std::to_string(b * 180.0 / PI_D) + "°";
 			ImGui::Text(s.c_str());
-			s = "Aufsteigender Knoten: " + std::to_string(omega);
+			s = "Inklination: " + std::to_string(i * 180.0 / PI_D) + "°";
 			ImGui::Text(s.c_str());
+			s = "Periapsis: " + std::to_string(w * 180.0 / PI_D) + "°";
+			ImGui::Text(s.c_str());
+			s = "Aufsteigender Knoten: " + std::to_string(omega * 180.0 / PI_D) + "°";
+			ImGui::Text(s.c_str());
+			ImGui::TextColored({0, 255, 255, 255}, "Weitere Informationen:");
+			ImGui::Text(text.c_str());
 		}
 		ImGui::End();
 	}
@@ -86,6 +117,14 @@ public:
 	DirectX::XMFLOAT3 GetPosition() const
 	{
 		return pos;
+	}
+	void SetInfo(std::string newInfo)
+	{
+		text = newInfo;
+	}
+	void AddInfo(std::string addInfo)
+	{
+		text += addInfo;
 	}
 private:
 	static double SolveKepler(double M, double e)
@@ -103,6 +142,7 @@ private:
 private:
 	Model sphere;
 	std::string name;
+	std::string text;
 	//data
 	double e; ///Exzentrizität
 	double a; ///große Halbachse
@@ -110,6 +150,8 @@ private:
 	double omega; ///Winkel des aufsteigenden Knotens
 	double w; ///Periapsis
 	double T; ///Umlaufzeit
+	double t; ///Rotationsdauer
+	double b; ///Neigung des Äquators zum Orbit
 	float radiusScale = 2.0f;
 	//calculated values
 	const double sini = sin(i);
@@ -118,5 +160,7 @@ private:
 	const double cosomega = cos(omega);
 	const double sinw = sin(w);
 	const double cosw = cos(w);
-	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 pos = { 0.0f, 0.0f, 0.0f };
+	DirectX::XMMATRIX rotation = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX tilt = DirectX::XMMatrixIdentity();
 };

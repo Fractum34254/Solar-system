@@ -27,6 +27,8 @@ private:
 	void ShowImguiDemoWindow();
 	void SpawnControlWindow();
 	DirectX::XMVECTOR GetClickVector(DirectX::XMFLOAT3 pixel) const;
+	void ResolveKeyboard(float dt);
+	void ResolveMouse();
 private:
 	std::string commandLine;
 	bool showDemoWindow = false;
@@ -35,7 +37,9 @@ private:
 	ScriptCommander scriptCommander;
 	ChiliTimer timer;
 	float speed_factor = 1.0f;
+	float constant_speed_factor = 0.001f;
 	float speed_factor_point = speed_factor;
+	float former_speed_factor = 0.0f;
 	Camera cam;
 	FrameCommander fc;
 	PointLight light;
@@ -45,7 +49,8 @@ private:
 	//Controls
 	bool accurate = true;
 	bool real = true;
-	bool blah = false;
+	bool rotation = true;
+	int monthsCount[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	//Planets
 	std::vector<std::unique_ptr<Planet>> planets;
 };
