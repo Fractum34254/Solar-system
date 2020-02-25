@@ -37,8 +37,9 @@ App::App( const std::string& commandLine )
 	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921)));
 	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393)));
 
-	planets.at(2)->SetInfo("Unser Heimatplanet.\nEinzigartig im Universum.");
-	planets.at(3)->SetInfo("Wann Elon Musk wohl dort sein wird?");
+	planets.at(0)->SetInfo("Erst 2 Sonden, Mariner 10 und Messenger, haben Merkur besucht und kartografiert.\nAufgrund 2km hoher Steilhänge wird vermutet, dass der gesamte Planet geschrummpft ist.");
+	planets.at(1)->SetInfo("Auf der Venus herrscht 90-facher Erdluftdruck.\nTrotzdem wird spekuliert, ob eventuell Bakterien in den heißen Wolken leben.");
+	planets.at(2)->SetInfo("Unser Heimatplanet. Einzigartig im Universum.\nVor 3.5 Milliarden Jahren entstanden hier die ersten Formen allen uns bekannten Lebens.");
 
 }
 
@@ -184,14 +185,7 @@ void App::SpawnControlWindow()
 		{
 			if (years % 4 == 0)
 			{
-				if (days > 366)
-				{
-					days -= 366;
-				}
-				else
-				{
-					years--;
-				}
+				days -= 366;
 			}
 			else
 			{
@@ -215,6 +209,7 @@ void App::SpawnControlWindow()
 			monthDays = (monthsCount[months] + ((((years % 4) == 0) && (months == 1)) ? 1 : 0));
 		}
 
+		ImGui::PushStyleColor(NULL, { 1.0f, 1.0f, 1.0f, 1.0f });
 		std::string t = "Datum:";
 		t += std::to_string(days) + "." + std::to_string(months) + "." + std::to_string(years);
 		ImGui::Text(t.c_str());

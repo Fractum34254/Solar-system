@@ -88,25 +88,35 @@ public:
 		if (ImGui::Begin(name.c_str()))
 		{
 			std::string s;
-			ImGui::TextColored({ 0, 255, 255, 255 }, "Datensatz:");
-			s = "e: " + std::to_string(e);
-			ImGui::Text(s.c_str());
-			s = "a: " + std::to_string(a);
-			ImGui::Text(s.c_str());
-			s = "Umlaufzeit: " + std::to_string(T);
-			ImGui::Text(s.c_str());
-			s = "Rotationsperiode: " + std::to_string(t);
-			ImGui::Text(s.c_str());
-			s = "Neigung zur Bahnebene: " + std::to_string(b * 180.0 / PI_D) + "°";
-			ImGui::Text(s.c_str());
-			s = "Inklination: " + std::to_string(i * 180.0 / PI_D) + "°";
-			ImGui::Text(s.c_str());
-			s = "Periapsis: " + std::to_string(w * 180.0 / PI_D) + "°";
-			ImGui::Text(s.c_str());
-			s = "Aufsteigender Knoten: " + std::to_string(omega * 180.0 / PI_D) + "°";
-			ImGui::Text(s.c_str());
-			ImGui::TextColored({0, 255, 255, 255}, "Weitere Informationen:");
-			ImGui::Text(text.c_str());
+			ImGui::PushStyleColor(NULL, { 0, 1.0f, 1.0f, 1.0f });
+			if(ImGui::TreeNodeEx("Datensatz:"))
+			{
+				ImGui::PushStyleColor(NULL, { 1.0f, 1.0f, 1.0f, 1.0f });
+				s = "e: " + std::to_string(e);
+				ImGui::Text(s.c_str());
+				s = "a: " + std::to_string(a);
+				ImGui::Text(s.c_str());
+				s = "Umlaufzeit: " + std::to_string(T);
+				ImGui::Text(s.c_str());
+				s = "Rotationsperiode: " + std::to_string(t);
+				ImGui::Text(s.c_str());
+				s = "Neigung zur Bahnebene: " + std::to_string(b * 180.0 / PI_D) + "°";
+				ImGui::Text(s.c_str());
+				s = "Inklination: " + std::to_string(i * 180.0 / PI_D) + "°";
+				ImGui::Text(s.c_str());
+				s = "Periapsis: " + std::to_string(w * 180.0 / PI_D) + "°";
+				ImGui::Text(s.c_str());
+				s = "Aufsteigender Knoten: " + std::to_string(omega * 180.0 / PI_D) + "°";
+				ImGui::Text(s.c_str());
+				ImGui::TreePop();
+			}
+			ImGui::PushStyleColor(NULL, { 0, 1.0f, 1.0f, 1.0f });
+			if (ImGui::TreeNodeEx("Weitere Informationen:"))
+			{
+				ImGui::PushStyleColor(NULL, { 1.0f, 1.0f, 1.0f, 1.0f });
+				ImGui::Text(text.c_str());
+				ImGui::TreePop();
+			}
 		}
 		ImGui::End();
 	}
