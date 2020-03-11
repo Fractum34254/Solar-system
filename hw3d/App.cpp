@@ -28,16 +28,18 @@ App::App( const std::string& commandLine )
 {
 	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,400.0f ) );
 
-	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467, 58.646225, 0.0)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726, -243.0187, 3.09446876)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0, 1.0, 0.40927971)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476, 1.02595675, 0.439648439)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615, 0.41354, 0.054454273)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498, 0.44401, 0.466526509)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393)));
+	selected.resize(8, false);
 
-	planets.at(0)->SetInfo("Erst 2 Sonden, Mariner 10 und Messenger, haben Merkur besucht und kartografiert.\nAufgrund 2km hoher Steilhänge wird vermutet, dass der gesamte Planet geschrummpft ist.");
+	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467, 58.646225, 0.0, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726, -243.0187, 3.09446876, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0, 1.0, 0.40927971, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476, 1.02595675, 0.439648439, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615, 0.41354, 0.054454273, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498, 0.44401, 0.466526509, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921, 0.0 / 365.25 * 2.0 * PI)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393, 0.0 / 365.25 * 2.0 * PI)));
+
+	planets.at(0)->SetInfo("Erst 2 Sonden, Mariner 10 und Messenger, haben Merkur besucht und kartografiert.\nAufgrund 2km hoher Steilhänge wird vermutet, dass der gesamte Planet geschrumpft ist.");
 	planets.at(1)->SetInfo("Auf der Venus herrscht 90-facher Erdluftdruck.\nTrotzdem wird spekuliert, ob eventuell Bakterien in den heißen Wolken leben.");
 	planets.at(2)->SetInfo("Unser Heimatplanet. Einzigartig im Universum.\nVor 3.5 Milliarden Jahren entstanden hier die ersten Formen allen uns bekannten Lebens.");
 
@@ -52,6 +54,8 @@ void App::DoFrame()
 	wnd.Gfx().BeginFrame( 0.07f,0.0f,0.12f );
 	wnd.Gfx().SetCamera( cam.GetMatrix() );
 	light.Bind( wnd.Gfx(),cam.GetMatrix() );
+	ResolveKeyboard(cam_dt);
+	ResolveMouse();
 
 	//Calculate positions & rotations
 	for (size_t i = 0; i < planets.size(); i++)
@@ -66,7 +70,7 @@ void App::DoFrame()
 	}
 
 	//Test for clicking
-	if (wnd.mouse.LeftIsPressed() && wnd.CursorEnabled())
+	if (left_down && wnd.CursorEnabled())
 	{
 		DirectX::XMFLOAT3 dir;
 		DirectX::XMStoreFloat3(&dir, GetClickVector({ (float)wnd.mouse.GetPosX(), (float)wnd.mouse.GetPosY(), 0.0f }));
@@ -89,15 +93,18 @@ void App::DoFrame()
 
 		std::for_each(diff.begin(), diff.end(), [&focused](std::pair<float, float> p) {focused.emplace_back((p.first < 0.25f) && (p.second >= 0.0f)); });
 
-		selected = -1;
-		for (size_t i = 0; i < planets.size(); i++)
+		if (std::any_of(focused.begin(), focused.end(), [](const bool& b) {return b;}))
 		{
-			if (focused.at(i))
+			for (size_t i = 0; i < selected.size(); i++)
 			{
-				if ((selected == -1) || (diff.at(i).second < diff.at(selected).second))
-				{
-					selected = static_cast<int>(i);
-				}
+				selected.at(i) = (selected.at(i) != focused.at(i));
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < selected.size(); i++)
+			{
+				selected.at(i) = false;
 			}
 		}
 		clicked = true;
@@ -108,19 +115,25 @@ void App::DoFrame()
 	{
 		for (size_t i = 0; i < planets.size(); i++)
 		{
-			planets.at(i)->DeHighlight();
-		}
-		if(selected != -1)
-		{
-			planets.at(selected)->Highlight();
+			if (selected.at(i))
+			{
+				planets.at(i)->Highlight();
+			}
+			else
+			{
+				planets.at(i)->DeHighlight();
+			}
 		}
 		clicked = false;
 	}
 
 	//Show Info Window of Highlighted planet
-	if (selected != -1)
+	for (size_t i = 0; i < planets.size(); i++)
 	{
-		planets.at(selected)->SpawnInfoWindow();
+		if (selected.at(i))
+		{
+			planets.at(i)->SpawnInfoWindow();
+		}
 	}
 
 	//Apply transforms
@@ -141,8 +154,6 @@ void App::DoFrame()
 	{
 		former_speed_factor = 0.0f;
 	}
-	ResolveKeyboard(cam_dt);
-	ResolveMouse();
 	
 
 	// imgui windows
@@ -167,7 +178,7 @@ void App::SpawnControlWindow()
 	//Imgui control window
 	if (ImGui::Begin("Steuerung"))
 	{
-		int days = (int)(time * 365.25) - 37;
+		int days = (int)(time * 365.25);
 		int years = 2000;
 		while (days <= 0)
 		{
@@ -243,7 +254,7 @@ void App::SpawnControlWindow()
 			ImGui::Checkbox("Exakt?", &accurate);
 			if (accurate)
 			{
-				ImGui::SliderFloat("Faktor", &speed_factor, speed_factor_point - 3.0f, speed_factor_point + 3.0f, "%.1f");
+				ImGui::SliderFloat("Faktor", &speed_factor, speed_factor_point - 10.0f, speed_factor_point + 10.0f, "%.1f");
 			}
 			else
 			{
@@ -333,11 +344,22 @@ void App::ResolveKeyboard(float dt)
 
 void App::ResolveMouse()
 {
+	left_down = false;
 	while (const auto delta = wnd.mouse.ReadRawDelta())
 	{
 		if (!wnd.CursorEnabled())
 		{
 			cam.Rotate((float)delta->x, (float)delta->y);
+		}
+	}
+	while (const auto& e = wnd.mouse.Read())
+	{
+		if (e)
+		{
+			if (e->GetType() == Mouse::Event::Type::LPress)
+			{
+				left_down = true;
+			}
 		}
 	}
 }

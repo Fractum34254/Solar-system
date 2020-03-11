@@ -43,8 +43,8 @@ private:
 	Camera cam;
 	FrameCommander fc;
 	PointLight light;
-	int selected = -1;
 	bool clicked = false;
+	bool left_down = false;
 	double time = 0.0;
 	//Controls
 	bool accurate = true;
@@ -53,4 +53,5 @@ private:
 	int monthsCount[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	//Planets
 	std::vector<std::unique_ptr<Planet>> planets;
+	std::vector<bool> selected;
 };
