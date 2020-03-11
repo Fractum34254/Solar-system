@@ -12,6 +12,7 @@ public:
 	void Reset() noexcept;
 	void Submit( class FrameCommander& frame ) const noxnd;
 	void Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept;
+	void SetPos(DirectX::XMFLOAT3 newPos);
 private:
 	struct PointLightCBuf
 	{
