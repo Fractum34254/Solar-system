@@ -8,7 +8,7 @@
 class Planet
 {
 public:
-	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b)
+	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b, double offset)
 		:
 		name(name),
 		sphere(gfx, pathString, sphereScale),
@@ -19,7 +19,8 @@ public:
 		w(w),
 		T(T),
 		t(t),
-		b(b)
+		b(b),
+		offset(offset)
 	{
 		text = "---";
 		//calculating tilt
@@ -27,7 +28,7 @@ public:
 		const double tiltAngle = b + i;
 		///rotational axis
 		const DirectX::XMFLOAT3 xAxis = { 1.0f, 0.0f, 0.0f };
-		const DirectX::XMVECTOR axis = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&xAxis), DirectX::XMMatrixRotationRollPitchYaw(0.0f, -(float)omega - 2.0f * PI * 37.0f / 366.25f, 0.0f));
+		const DirectX::XMVECTOR axis = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&xAxis), DirectX::XMMatrixRotationRollPitchYaw(0.0f, -(float)omega, 0.0f));
 		tilt = DirectX::XMMatrixRotationAxis(axis, (float)tiltAngle);
 	}
 	void Submit(FrameCommander& fc) const
@@ -52,7 +53,7 @@ public:
 	}
 	void CalculatePosition(double M)
 	{
-		const double v = SolveKepler(M / T, e);
+		const double v = SolveKepler((M + offset) / T, e);
 
 		const double sinv = sin(v);
 		const double cosv = cos(v);
@@ -162,6 +163,7 @@ private:
 	double T; ///Umlaufzeit
 	double t; ///Rotationsdauer
 	double b; ///Neigung des Äquators zum Orbit
+	double offset; ///Startwinkel
 	float radiusScale = 2.0f;
 	//calculated values
 	const double sini = sin(i);

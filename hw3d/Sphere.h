@@ -106,6 +106,6 @@ public:
 		{
 			layout = Dvtx::VertexLayout{}.Append( Element::Position3D );
 		}
-		return MakeTesselated( std::move( *layout ),12,24 );
+		return MakeTesselated( std::move( *layout ),24,48 );
 	}
 };

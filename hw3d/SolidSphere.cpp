@@ -30,7 +30,7 @@ SolidSphere::SolidSphere( Graphics& gfx,float radius )
 
 		struct PSColorConstant
 		{
-			dx::XMFLOAT3 color = { 1.0f,0.9373f,0.9059f };
+			dx::XMFLOAT3 color = { 1.0f,1.0f,0.8f };
 			float padding;
 		} colorConst;
 		only.AddBindable( PixelConstantBuffer<PSColorConstant>::Resolve( gfx,colorConst,1u ) );
