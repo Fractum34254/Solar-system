@@ -7,7 +7,7 @@
 class PointLight
 {
 public:
-	PointLight( Graphics& gfx,float radius = 0.5f );
+	PointLight( Graphics& gfx, DirectX::XMFLOAT3 color, float radius = 0.5f );
 	void SpawnControlWindow() noexcept;
 	void Reset() noexcept;
 	void Submit( class FrameCommander& frame ) const noxnd;

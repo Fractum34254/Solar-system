@@ -2,9 +2,9 @@
 #include "imgui/imgui.h"
 #include "FrameCommander.h"
 
-PointLight::PointLight( Graphics& gfx,float radius )
+PointLight::PointLight( Graphics& gfx, DirectX::XMFLOAT3 color,float radius )
 	:
-	mesh( gfx,radius ),
+	mesh( gfx,radius, color ),
 	cbuf( gfx )
 {
 	Reset();
