@@ -16,6 +16,7 @@ class Model
 {
 public:
 	Model( Graphics& gfx,const std::string& pathString,float scale = 1.0f );
+	Model(bool solid, Graphics& gfx, const std::string& pathString, float scale = 1.0f);
 	void Submit( FrameCommander& frame ) const noxnd;
 	void SetRootTransform( DirectX::FXMMATRIX tf ) noexcept;
 	void Accept( class ModelProbe& probe );

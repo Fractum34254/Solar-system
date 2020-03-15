@@ -228,6 +228,9 @@
     <ClCompile Include="Planet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LightMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsMessageMap.h">
@@ -470,6 +473,9 @@
     <ClInclude Include="Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LightMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="hw3d.rc">
@@ -553,5 +559,10 @@
     <FxCompile Include="Offset_VS.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="LightedTexture_PS.hlsl">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
 </Project>

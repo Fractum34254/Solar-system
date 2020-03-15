@@ -46,6 +46,40 @@ Model::Model( Graphics& gfx,const std::string& pathString,const float scale )
 	pRoot = ParseNode( nextId,*pScene->mRootNode,scale );
 }
 
+Model::Model(bool solid, Graphics & gfx, const std::string & pathString, float scale)
+{
+	Assimp::Importer imp;
+	const auto pScene = imp.ReadFile(pathString.c_str(),
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_GenNormals |
+		aiProcess_CalcTangentSpace
+	);
+
+	if (pScene == nullptr)
+	{
+		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
+	}
+
+	// parse materials
+	std::vector<Material> materials;
+	materials.reserve(pScene->mNumMaterials);
+	for (size_t i = 0; i < pScene->mNumMaterials; i++)
+	{
+		materials.emplace_back(solid, gfx, *pScene->mMaterials[i], pathString);
+	}
+
+	for (size_t i = 0; i < pScene->mNumMeshes; i++)
+	{
+		const auto& mesh = *pScene->mMeshes[i];
+		meshPtrs.push_back(std::make_unique<Mesh>(gfx, materials[mesh.mMaterialIndex], mesh, scale));
+	}
+
+	int nextId = 0;
+	pRoot = ParseNode(nextId, *pScene->mRootNode, scale);
+}
+
 void Model::Submit( FrameCommander& frame ) const noxnd
 {
 	// I'm still not happy about updating parameters (i.e. mutating a bindable GPU state
