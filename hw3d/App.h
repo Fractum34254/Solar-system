@@ -13,6 +13,7 @@
 #include "Stencil.h"
 #include "FrameCommander.h"
 #include "Material.h"
+#include "LightMesh.h"
 #include "Planet.h"
 
 class App
@@ -42,7 +43,7 @@ private:
 	float former_speed_factor = 0.0f;
 	Camera cam;
 	FrameCommander fc;
-	PointLight light;
+	LightMesh light;
 	bool clicked = false;
 	bool left_down = false;
 	double time = 0.0;

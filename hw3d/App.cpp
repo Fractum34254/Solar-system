@@ -24,20 +24,20 @@ App::App( const std::string& commandLine )
 	commandLine( commandLine ),
 	wnd( 1440,810,"The Solar System" ),
 	scriptCommander( TokenizeQuoted( commandLine ) ),
-	light( wnd.Gfx() )
+	light( wnd.Gfx(), "Models\\sonne\\sphere.obj", 1.0f/190.0f )
 {
 	wnd.Gfx().SetProjection( dx::XMMatrixPerspectiveLH( 1.0f,9.0f / 16.0f,0.5f,400.0f ) );
 
 	selected.resize(8, false);
 
-	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj",	1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467, 58.646225, 0.0, 0.0 / 365.25 * 2.0 * PI, 10)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj",	1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132,  2.295683575954 , 0.61519726, -243.0187, 3.09446876, 0.0 / 365.25 * 2.0 * PI, 20)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj",	1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0, 1.0, 0.40927971, 0.0 / 365.25 * 2.0 * PI, 30)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj",	1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476, 1.02595675, 0.439648439, 0.0 / 365.25 * 2.0 * PI, 40)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266,  5.2033623,  0.022781782726,  1.755035900625, 0.257503259845, 11.862615, 0.41354, 0.054454273, 0.0 / 365.25 * 2.0 * PI, 50)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj",	1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498, 0.44401, 0.466526509, 0.0 / 365.25 * 2.0 * PI, 60)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj",	1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921, 0.0 / 365.25 * 2.0 * PI, 70)));
-	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj",	1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393, 0.0 / 365.25 * 2.0 * PI, 80)));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Merkur", wnd.Gfx(), "Models\\merkur\\sphere.obj", 1.0f / 200.0f, 0.20563069, 0.38709888, 0.12225804517, 0.843546774485, 1.3518700794, 0.2408467, 58.646225, 0.0, 0.0 / 365.25 * 2.0 * PI, 10, DirectX::XMFLOAT3( 184.0f/255.0f, 134.0f / 255.0f,11.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Venus", wnd.Gfx(), "Models\\venus\\sphere.obj", 1.0f / 200.0f, 0.00677323, 0.72333193, 0.05924886665, 1.3383305132, 2.295683575954, 0.61519726, -243.0187, 3.09446876, 0.0 / 365.25 * 2.0 * PI, 20, DirectX::XMFLOAT3( 210.0f / 255.0f,105.0f / 255.0f,30.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Erde", wnd.Gfx(), "Models\\erde\\sphere.obj", 1.0f / 200.0f, 0.01671022, 1.0, 0.0, -0.196535243881, 1.796767421172, 1.0, 1.0, 0.40927971, 0.0 / 365.25 * 2.0 * PI, 30, DirectX::XMFLOAT3(0.0f / 255.0f,0.0f / 255.0f,255.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Mars", wnd.Gfx(), "Models\\mars\\sphere.obj", 1.0f / 200.0f, 0.09341233, 1.5236621, 0.03229923767, 0.86530876133, 5.865019079153, 1.8808476, 1.02595675, 0.439648439, 0.0 / 365.25 * 2.0 * PI, 40, DirectX::XMFLOAT3(255.0f / 255.0f, 69.0f / 255.0f, 0.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Jupiter", wnd.Gfx(), "Models\\jupiter\\sphere.obj", 1.0f / 200.0f, 0.04839266, 5.2033623, 0.022781782726, 1.755035900625, 0.257503259845, 11.862615, 0.41354, 0.054454273, 0.0 / 365.25 * 2.0 * PI, 50, DirectX::XMFLOAT3(255.0f / 255.0f,231.0f / 255.0f,186.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Saturn", wnd.Gfx(), "Models\\saturn\\sphere.obj", 1.0f / 200.0f, 0.05415060, 9.5370690, 0.043362007134, 1.984701857032, 1.613241687002, 29.447498, 0.44401, 0.466526509, 0.0 / 365.25 * 2.0 * PI, 60, DirectX::XMFLOAT3(255.0f / 255.0f, 165.0f / 255.0f,79.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Uranus", wnd.Gfx(), "Models\\uranus\\sphere.obj", 1.0f / 200.0f, 0.04716771, 19.191261, 0.013436591779, 1.29555580936, 2.983888891162, 84.016846, -0.71833, 1.70797921, 0.0 / 365.25 * 2.0 * PI, 70, DirectX::XMFLOAT3(224.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f))));
+	planets.emplace_back(std::move(std::make_unique<Planet>("Neptun", wnd.Gfx(), "Models\\neptun\\sphere.obj", 1.0f / 200.0f, 0.00858587, 30.068960, 0.030877841527, 2.298977186786, 0.784898126565, 164.79132, 0.67125, 0.516268393, 0.0 / 365.25 * 2.0 * PI, 80, DirectX::XMFLOAT3(72.0f / 255.0f, 118.0f / 255.0f, 255.0f / 255.0f))));
 
 	planets.at(0)->SetInfo("Erst 2 Sonden, Mariner 10 und Messenger, haben Merkur besucht und kartografiert.\nAufgrund 2km hoher Steilh‰nge wird vermutet, dass der gesamte Planet geschrumpft ist.");
 	planets.at(1)->SetInfo("Auf der Venus herrscht 90-facher Erdluftdruck.\nTrotzdem wird spekuliert, ob eventuell Bakterien in den heiﬂen Wolken leben.");

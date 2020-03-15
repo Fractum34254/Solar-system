@@ -10,7 +10,7 @@
 class Planet
 {
 public:
-	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b, double offset, size_t pathDivisions);
+	Planet(const std::string& name, Graphics& gfx, const std::string& pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b, double offset, size_t pathDivisions, DirectX::XMFLOAT3 pathColor);
 	void Submit(FrameCommander& fc) const;
 	void SetPos(const DirectX::XMFLOAT3& position);
 	void SetRotation(const DirectX::XMMATRIX& rot);

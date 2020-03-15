@@ -1,7 +1,7 @@
 #include "Planet.h"
 #include "TechniqueProbe.h"
 
-Planet::Planet(const std::string & name, Graphics & gfx, const std::string & pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b, double offset, size_t pathDivisions)
+Planet::Planet(const std::string & name, Graphics & gfx, const std::string & pathString, float sphereScale, double e, double a, double i, double omega, double w, double T, double t, double b, double offset, size_t pathDivisions, DirectX::XMFLOAT3 pathColor)
 	:
 	name(name),
 	sphere(gfx, pathString, sphereScale),
@@ -27,7 +27,7 @@ Planet::Planet(const std::string & name, Graphics & gfx, const std::string & pat
 	//calculate all positions of path positions
 	for (size_t j = 0; j < pathSize; j++)
 	{
-		path.emplace_back(std::move(std::make_unique<PointLight>(gfx, 0.05f)));
+		path.emplace_back(std::move(std::make_unique<PointLight>(gfx, pathColor, 0.05f)));
 		path.back()->SetPos(ReturnPosition(T * (double)j * 2.0 * PI_D / ((double)pathSize)));
 	}
 }
