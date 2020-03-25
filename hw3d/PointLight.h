@@ -13,6 +13,9 @@ public:
 	void Submit( class FrameCommander& frame ) const noxnd;
 	void Bind( Graphics& gfx,DirectX::FXMMATRIX view ) const noexcept;
 	void SetPos(DirectX::XMFLOAT3 newPos);
+	DirectX::XMFLOAT3 GetPos() const noexcept;
+	DirectX::XMFLOAT3 GetStartPos() const noexcept;
+	void SetStartPos(DirectX::XMFLOAT3 newPos);
 private:
 	struct PointLightCBuf
 	{
@@ -25,6 +28,7 @@ private:
 		float attQuad;
 	};
 private:
+	DirectX::XMFLOAT3 startPos;
 	PointLightCBuf cbData;
 	mutable SolidSphere mesh;
 	mutable Bind::PixelConstantBuffer<PointLightCBuf> cbuf;

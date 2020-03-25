@@ -69,3 +69,18 @@ void PointLight::SetPos(DirectX::XMFLOAT3 newPos)
 {
 	cbData.pos = newPos;
 }
+
+DirectX::XMFLOAT3 PointLight::GetPos() const noexcept
+{
+	return cbData.pos;
+}
+
+DirectX::XMFLOAT3 PointLight::GetStartPos() const noexcept
+{
+	return startPos;
+}
+
+void PointLight::SetStartPos(DirectX::XMFLOAT3 newPos)
+{
+	startPos = newPos;
+}
