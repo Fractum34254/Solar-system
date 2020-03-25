@@ -185,6 +185,7 @@
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformCbuf.cpp" />
     <ClCompile Include="TransformCbufDoubleboi.cpp" />
+    <ClCompile Include="TransparentPlane.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="ConditionalNoexcept.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="ConstantBuffersEx.h" />
+    <ClInclude Include="ConvexPlane.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DynamicConstant.h" />
     <ClInclude Include="FrameCommander.h" />
@@ -291,6 +293,7 @@
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformCbuf.h" />
     <ClInclude Include="TransformCbufDoubleboi.h" />
+    <ClInclude Include="TransparentPlane.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
