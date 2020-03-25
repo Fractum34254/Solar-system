@@ -14,7 +14,8 @@ Planet::Planet(const std::string & name, Graphics & gfx, const std::string & pat
 	t(t),
 	b(b),
 	offset(offset),
-	pathSize(pathDivisions)
+	pathSize(pathDivisions),
+	pathColor(pathColor)
 {
 	text = "---";
 	//calculating tilt
@@ -24,24 +25,12 @@ Planet::Planet(const std::string & name, Graphics & gfx, const std::string & pat
 	const DirectX::XMFLOAT3 xAxis = { 1.0f, 0.0f, 0.0f };
 	const DirectX::XMVECTOR axis = DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&xAxis), DirectX::XMMatrixRotationRollPitchYaw(0.0f, -(float)omega, 0.0f));
 	tilt = DirectX::XMMatrixRotationAxis(axis, (float)tiltAngle);
-	//calculate all positions of path positions
-	for (size_t j = 0; j < pathSize; j++)
-	{
-		path.emplace_back(std::move(std::make_unique<PointLight>(gfx, pathColor, 0.05f)));
-		path.back()->SetPos(ReturnPosition(T * (double)j * 2.0 * PI_D / ((double)pathSize)));
-	}
+	CalculateEllipse(gfx);
 }
 
 void Planet::Submit(FrameCommander & fc) const
 {
 	sphere.Submit(fc);
-	if (highlighted)
-	{
-		for (const auto& s : path)
-		{
-			s->Submit(fc);
-		}
-	}
 }
 
 void Planet::SetPos(const DirectX::XMFLOAT3 & position)
@@ -148,7 +137,22 @@ void Planet::DeHighlight()
 	sphere.Accept(probe);
 }
 
-void Planet::SpawnInfoWindow() const
+void Planet::SubmitHighlighted(FrameCommander & fc) const
+{
+	if (highlighted)
+	{
+		if (showDots)
+		{
+			for (const auto& s : path)
+			{
+				s->Submit(fc);
+			}
+		}
+		ellipsePlane->Submit(fc);
+	}
+}
+
+void Planet::SpawnInfoWindow()
 {
 	if (ImGui::Begin(name.c_str()))
 	{
@@ -156,7 +160,7 @@ void Planet::SpawnInfoWindow() const
 		ImGui::PushStyleColor(NULL, { 0, 1.0f, 1.0f, 1.0f });
 		if (ImGui::TreeNodeEx("Datensatz:"))
 		{
-			ImGui::PushStyleColor(NULL, { 1.0f, 1.0f, 1.0f, 1.0f });
+			ImGui::PopStyleColor();
 			s = "e: " + std::to_string(e);
 			ImGui::Text(s.c_str());
 			s = "a: " + std::to_string(a);
@@ -175,13 +179,15 @@ void Planet::SpawnInfoWindow() const
 			ImGui::Text(s.c_str());
 			ImGui::TreePop();
 		}
-		ImGui::PushStyleColor(NULL, { 0, 1.0f, 1.0f, 1.0f });
-		if (ImGui::TreeNodeEx("Weitere Informationen:"))
+		else
 		{
-			ImGui::PushStyleColor(NULL, { 1.0f, 1.0f, 1.0f, 1.0f });
-			ImGui::Text(text.c_str());
-			ImGui::TreePop();
+			ImGui::PopStyleColor();
 		}
+		if (ImGui::SliderFloat("Bahnradius", &radiusScale, 0.1f, 10.0f, "%.1f"))
+		{
+			RescaleEllipse();
+		}
+		ImGui::Checkbox("Bahnkugeln", &showDots);
 	}
 	ImGui::End();
 }
@@ -204,6 +210,39 @@ void Planet::SetInfo(std::string newInfo)
 void Planet::AddInfo(std::string addInfo)
 {
 	text += addInfo;
+}
+
+void Planet::CalculateEllipse(Graphics& gfx)
+{
+	//clear all former data
+	path.clear();
+	ellipsePlane.release();
+	//calculate all positions of path positions
+	std::vector<DirectX::XMFLOAT3> ellipse;
+	for (size_t j = 0; j < pathSize; j++)
+	{
+		path.emplace_back(std::move(std::make_unique<PointLight>(gfx, pathColor, 0.03f)));
+		const DirectX::XMFLOAT3 pathPos = ReturnPosition(T * (double)j * 2.0 * PI_D / ((double)pathSize));
+		path.back()->SetPos(pathPos);
+		path.back()->SetStartPos(pathPos);
+		ellipse.push_back(pathPos);
+	}
+	///create ellipse
+	ellipsePlane = std::move(std::make_unique<TransparentPlane>(gfx, std::move(ellipse), pathColor));
+}
+
+void Planet::RescaleEllipse()
+{
+	const float scale = radiusScale / startRadiusScale;
+	for (const auto& s : path)
+	{
+		DirectX::XMFLOAT3 sPos = s->GetStartPos();
+		sPos.x *= scale;
+		sPos.y *= scale;
+		sPos.z *= scale;
+		s->SetPos(sPos);
+	}
+	ellipsePlane->SetRootTransform(DirectX::XMMatrixScaling(scale, scale, scale));
 }
 
 double Planet::SolveKepler(double M, double e)

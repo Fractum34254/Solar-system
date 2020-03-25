@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "PointLight.h"
 #include "FrameCommander.h"
+#include "TransparentPlane.h"
 #include "imgui/imgui.h"
 
 class Planet
@@ -22,20 +23,26 @@ public:
 	float* GetRadiusScale();
 	void Highlight();
 	void DeHighlight();
-	void SpawnInfoWindow() const;
+	void SubmitHighlighted(FrameCommander& fc) const;
+	void SpawnInfoWindow();
 	std::string GetName() const;
 	DirectX::XMFLOAT3 GetPosition() const;
 	void SetInfo(std::string newInfo);
 	void AddInfo(std::string addInfo);
+	void RescaleEllipse();
 private:
+	void CalculateEllipse(Graphics& gfx);
 	static double SolveKepler(double M, double e);
 private:
 	Model sphere;
 	std::string name;
 	std::string text;
 	std::vector<std::unique_ptr<PointLight>> path;
+	std::unique_ptr<TransparentPlane> ellipsePlane;
 	size_t pathSize;
+	DirectX::XMFLOAT3 pathColor;
 	bool highlighted = false;
+	bool showDots = true;
 	//data
 	double e; ///Exzentrizität
 	double a; ///große Halbachse
@@ -46,7 +53,8 @@ private:
 	double t; ///Rotationsdauer
 	double b; ///Neigung des Äquators zum Orbit
 	double offset; ///Startwinkel
-	float radiusScale = 2.0f;
+	const float startRadiusScale = 2.0f;
+	float radiusScale = startRadiusScale;
 	//calculated values
 	const double sini = sin(i);
 	const double cosi = cos(i);
