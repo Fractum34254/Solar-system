@@ -42,7 +42,8 @@ private:
 	size_t pathSize;
 	DirectX::XMFLOAT3 pathColor;
 	bool highlighted = false;
-	bool showDots = true;
+	bool showDots = false;
+	bool showEllipse = false;
 	//data
 	double e; ///Exzentrizit‰t
 	double a; ///groﬂe Halbachse
