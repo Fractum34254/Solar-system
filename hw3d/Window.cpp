@@ -198,6 +198,11 @@ int Window::GetWidth() const
 	return width;
 }
 
+void Window::Kill() const
+{
+	PostQuitMessage(0);
+}
+
 void Window::ConfineCursor() noexcept
 {
 	RECT rect; 

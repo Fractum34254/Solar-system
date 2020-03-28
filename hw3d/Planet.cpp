@@ -148,7 +148,10 @@ void Planet::SubmitHighlighted(FrameCommander & fc) const
 				s->Submit(fc);
 			}
 		}
-		ellipsePlane->Submit(fc);
+		if (showEllipse)
+		{
+			ellipsePlane->Submit(fc);
+		}
 	}
 }
 
@@ -188,6 +191,7 @@ void Planet::SpawnInfoWindow()
 			RescaleEllipse();
 		}
 		ImGui::Checkbox("Bahnkugeln", &showDots);
+		ImGui::Checkbox("Bahnellipse", &showEllipse);
 	}
 	ImGui::End();
 }

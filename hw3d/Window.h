@@ -83,6 +83,7 @@ public:
 	Graphics& Gfx() const;
 	int GetHeight() const;
 	int GetWidth() const;
+	void Kill() const;
 private:
 	void ConfineCursor() noexcept;
 	void FreeCursor() noexcept;

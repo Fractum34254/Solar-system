@@ -295,6 +295,9 @@ void App::ResolveKeyboard(float dt)
 		switch (e->GetCode())
 		{
 		case VK_ESCAPE:
+			wnd.Kill();
+			break;
+		case VK_RETURN:
 			if (wnd.CursorEnabled())
 			{
 				wnd.DisableCursor();
