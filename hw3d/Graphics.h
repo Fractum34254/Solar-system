@@ -71,10 +71,12 @@ public:
 	void EnableImgui() noexcept;
 	void DisableImgui() noexcept;
 	bool IsImguiEnabled() const noexcept;
+	void ToFullscreen();
 private:
 	DirectX::XMMATRIX projection;
 	DirectX::XMMATRIX camera;
 	bool imguiEnabled = true;
+	HWND hWnd;
 #ifndef NDEBUG
 	DxgiInfoManager infoManager;
 #endif

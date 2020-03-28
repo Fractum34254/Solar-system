@@ -22,7 +22,7 @@ namespace dx = DirectX;
 App::App( const std::string& commandLine )
 	:
 	commandLine( commandLine ),
-	wnd( 1440,810,"The Solar System" ),
+	wnd( "The Solar System" ),
 	scriptCommander( TokenizeQuoted( commandLine ) ),
 	light( wnd.Gfx(), "Models\\sonne\\sphere.obj", 1.0f/190.0f )
 {

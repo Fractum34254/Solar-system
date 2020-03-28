@@ -17,6 +17,9 @@ namespace dx = DirectX;
 
 Graphics::Graphics( HWND hWnd,int width,int height )
 {
+	this->hWnd = hWnd;
+
+	//describe swap chain
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = width;
 	sd.BufferDesc.Height = height;
@@ -187,6 +190,18 @@ void Graphics::DisableImgui() noexcept
 bool Graphics::IsImguiEnabled() const noexcept
 {
 	return imguiEnabled;
+}
+
+void Graphics::ToFullscreen()
+{
+	//GetMonitorInfo
+	/*MONITORINFO pMonitor = {};
+	pMonitor.cbSize = sizeof(MONITORINFO);
+	GetMonitorInfo(MonitorFromWindow(hWnd, 0), &pMonitor);
+	width = pMonitor.rcMonitor.right - pMonitor.rcMonitor.left;
+	height = pMonitor.rcMonitor.bottom - pMonitor.rcMonitor.top;*/
+	//Set Fullscreen
+	pSwap->SetFullscreenState(TRUE, NULL);
 }
 
 

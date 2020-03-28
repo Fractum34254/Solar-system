@@ -70,26 +70,23 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 
 // Window Stuff
-Window::Window( int width,int height,const char* name )
-	:
-	width( width ),
-	height( height )
+Window::Window( const char* name )
 {
-	// calculate window size based on desired client region size
+	// calculate window size based on screen size
 	RECT wr;
-	wr.left = 100;
-	wr.right = width + wr.left;
-	wr.top = 100;
-	wr.bottom = height + wr.top;
-	if( AdjustWindowRect( &wr,WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,FALSE ) == 0 )
+	GetWindowRect(GetDesktopWindow(), &wr);
+	width = wr.right - wr.left;
+	height = wr.bottom - wr.top;
+
+	if( AdjustWindowRect( &wr,WS_TILEDWINDOW | WS_MAXIMIZE,FALSE ) == 0 )
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
 	// create window & get hWnd
 	hWnd = CreateWindow(
 		WindowClass::GetName(),name,
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		CW_USEDEFAULT,CW_USEDEFAULT,wr.right - wr.left,wr.bottom - wr.top,
+		WS_TILEDWINDOW,
+		wr.left,wr.top,wr.right - wr.left,wr.bottom - wr.top,
 		nullptr,nullptr,WindowClass::GetInstance(),this
 	);
 	// check for error
@@ -98,7 +95,7 @@ Window::Window( int width,int height,const char* name )
 		throw CHWND_LAST_EXCEPT();
 	}
 	// newly created windows start off as hidden
-	ShowWindow( hWnd,SW_SHOWDEFAULT );
+	ShowWindow( hWnd,SW_SHOWMAXIMIZED );
 	// Init ImGui Win32 Impl
 	ImGui_ImplWin32_Init( hWnd );
 	// create graphics object
@@ -113,6 +110,7 @@ Window::Window( int width,int height,const char* name )
 	{
 		throw CHWND_LAST_EXCEPT();
 	}
+	pGfx->ToFullscreen();
 }
 
 Window::~Window()
